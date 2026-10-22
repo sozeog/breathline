@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f2f2f7">
+<meta name="apple-mobile-web-app-title" content="WANGNUN">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>WANGNUN GOGGLE · 고글 인터랙션</title>
+<link rel="stylesheet" href="style.css?v=13">
+</head>
+<body>
+<header class="band band-top">
+  <nav class="steps" id="steps" aria-label="장면 순서"></nav>
+</header>
+
+<main class="stage-wrap" id="stageWrap">
+  <div class="vlayer" id="vlayer"></div>
+  <div class="stage" id="stage">
+    <div class="scenes" id="scenes"></div>
+    <canvas class="motes" id="motes" width="1920" height="1080" aria-hidden="true"></canvas>
+
+    <!-- 공통 HUD: 장면이 바뀌어도 그대로 이어진다 -->
+    <div class="hud" aria-hidden="true">
+      <p class="clock" id="clock">10:35 AM</p>
+      <img class="compass" id="compass" src="assets/compass.png" alt="" style="left:812.4px;top:140px;width:295px;height:111px">
+      <img class="battery" src="assets/battery.png" alt="" style="left:1227.4px;top:165px;width:132px;height:61px">
+
+      <div class="side side-l" id="sideL">
+        <p class="lab" style="top:395px">DEPTH</p>
+        <p class="val" style="top:440px"><b id="vDepth">0.0</b><span class="u">m</span></p>
+        <p class="lab" style="top:513px">DIVE TIME</p>
+        <p class="val" style="top:558px"><b id="vDive">00:00</b></p>
+        <p class="lab" style="top:643px">TEMP</p>
+        <p class="val" style="top:690px"><b id="vTemp">28.5</b><span class="u deg"><small>°</small>C</span></p>
+      </div>
+
+      <div class="side side-r" id="sideR">
+        <p class="lab big" style="left:1507px;top:518px">COLLECTED</p>
+        <p class="val huge" style="left:1631px;top:505px"><b id="vCollected">07</b></p>
+        <i class="rule" style="left:1503px;top:550px;width:194px"></i>
+        <p class="lab big" style="left:1508px;top:584px">BUDDY</p>
+        <i class="dot" style="left:1510px;top:609px"></i>
+        <p class="lab mid" style="left:1542px;top:615px">SOJIN</p>
+        <p class="lab mid" style="left:1647px;top:615px"><span id="vBuddy">10</span>m</p>
+        <i class="dir" style="left:1680px;top:603px"><i class="tri" id="vDir"></i></i>
+      </div>
+    </div>
+
+    <img class="frame" src="assets/frame.png" alt="" style="left:-6.6px;top:-4.9px;width:1933.2px;height:1087.6px">
+  </div>
+</main>
+
+<footer class="band band-bottom">
+  <p class="cap-num" id="capNum">01 / 06</p>
+  <h1 class="cap-name" id="capName">CONNECT</h1>
+  <p class="cap-desc" id="capDesc">기기·버디 연결 상태 확인</p>
+</footer>
+
+<button class="snd" id="snd" onclick="enableSound(!soundOn)" aria-label="소리 켜기/끄기"><i></i></button>
+
+<script src="app.js?v=21"></script>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js'));</script>
+</body>
+</html>

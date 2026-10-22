@@ -1,0 +1,131 @@
+@font-face{font-family:P;font-weight:200;src:url(assets/fonts/Pretendard-ExtraLight.otf) format("opentype");font-display:block}
+@font-face{font-family:P;font-weight:300;src:url(assets/fonts/Pretendard-Light.otf) format("opentype");font-display:block}
+@font-face{font-family:P;font-weight:500;src:url(assets/fonts/Pretendard-Medium.otf) format("opentype");font-display:block}
+
+:root{--cyan:#00ffff;--ink:#fff;--dim:rgba(255,255,255,.42)}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:#000;color:var(--ink);overflow:hidden}
+body{display:flex;flex-direction:column;min-height:100vh;height:100dvh;font-family:P,"Apple SD Gothic Neo",sans-serif;
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+
+/* 위·아래 검은 띠 */
+.band{flex:1 1 0;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:0;
+  padding:0 max(24px,env(safe-area-inset-left)) 0 max(24px,env(safe-area-inset-right))}
+.band-top{padding-top:env(safe-area-inset-top)}
+.band-bottom{padding-bottom:env(safe-area-inset-bottom);gap:.45em;text-align:center}
+
+/* 순서: 지금 장면은 밝게, 아래 선이 장면 길이만큼 차오른다 */
+.steps{display:flex;gap:clamp(14px,2.6vw,44px);font-size:clamp(11px,1.15vw,17px);letter-spacing:.04em}
+.step{position:relative;padding:.9em 0 1em;border:0;background:none;color:var(--dim);font:inherit;font-weight:500;cursor:pointer;white-space:nowrap;transition:color .35s}
+.step span{margin-right:.55em;font-weight:300;font-variant-numeric:tabular-nums}
+.step::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;background:rgba(255,255,255,.14)}
+.step i{position:absolute;left:0;bottom:0;height:1px;width:0;background:#fff;z-index:1}
+.step.on{color:#fff}
+.step.done{color:rgba(255,255,255,.62)}
+
+.cap-num{font-size:clamp(11px,1vw,15px);font-weight:300;color:var(--dim);letter-spacing:.12em;font-variant-numeric:tabular-nums}
+.cap-name{font-size:clamp(18px,2vw,30px);font-weight:500;letter-spacing:.03em}
+.cap-desc{font-size:clamp(13px,1.35vw,20px);font-weight:300;color:rgba(255,255,255,.78)}
+.cap-name,.cap-desc{transition:opacity .4s}
+.swap .cap-name,.swap .cap-desc{opacity:0}
+
+/* 16:9 장면: 화면 폭에 맞추고, 남는 높이는 위·아래 띠가 나눠 갖는다 */
+.stage-wrap{flex:none;position:relative;width:100vw;height:56.25vw;max-height:calc(100dvh - 150px);overflow:hidden}
+.stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:transparent}
+.vlayer{position:absolute;overflow:hidden;background:#000}
+.bgset{position:absolute;inset:0;opacity:0;transition:opacity .9s ease}
+.bgset.on{opacity:1}
+.bgset img,.bgset video{position:absolute;display:block;max-width:none;object-fit:fill}
+.player{position:absolute;display:block;max-width:none;object-fit:fill;opacity:0;transition:opacity .9s ease;background:transparent}
+.player.on{opacity:1}
+.stage img{position:absolute;display:block;max-width:none}
+
+.scene{position:absolute;inset:0;opacity:0;transition:opacity .9s ease;pointer-events:none}
+.scene.on{opacity:1}
+/* 배경 사진은 고정. 움직임은 영상(04)과 HUD로만 */
+.world{position:absolute;inset:0}
+.motes{position:absolute;inset:0;width:1920px;height:1080px;pointer-events:none}
+
+/* 장면 안 표시: 홀로그램처럼 깜빡이며 나타난다 */
+.pop{opacity:0}
+.scene.on .pop{animation:holo .9s steps(1,end) forwards;animation-delay:var(--at,1s)}
+@keyframes holo{0%{opacity:0}10%{opacity:.85}18%{opacity:.15}28%{opacity:1}36%{opacity:.4}48%,100%{opacity:1}}
+
+/* HUD */
+.hud{position:absolute;inset:0;pointer-events:none}
+.hud p{position:absolute;line-height:1;transform:translateY(-50%);white-space:nowrap}
+.clock{left:580px;top:195px;font-size:25.2px;font-weight:300}
+.compass{will-change:transform}
+.side{transition:opacity .6s}
+.side.off{opacity:0}
+.side-l .lab{left:222px}
+.lab{font-size:16.5px;font-weight:500;letter-spacing:.01em}
+.lab.big{font-size:20.9px}
+.lab.mid{font-size:16.8px}
+.val{left:218px;font-size:53px;font-weight:300;color:var(--cyan);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.val b{font-weight:300}
+.val .u{margin-left:10px;font-size:34px}
+.val .deg{margin-left:2px;font-size:31px}
+.val .deg small{position:relative;top:-.55em;font-size:.38em}
+.val.huge{font-size:66px}
+.rule{position:absolute;height:1px;background:rgba(255,255,255,.55)}
+.dot{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--cyan)}
+.dir{position:absolute;width:24px;height:24px}
+.tri{position:absolute;left:7px;top:6px;width:0;height:0;border-left:11px solid var(--cyan);border-top:6px solid transparent;border-bottom:6px solid transparent;transform-origin:4px 6px}
+.bump{animation:bump .9s ease}
+@keyframes bump{30%{transform:translateY(-50%) scale(1.25);text-shadow:0 0 18px rgba(0,255,255,.9)}100%{transform:translateY(-50%)}}
+
+/* TODAY 전송 */
+.today-pct{left:960px;top:520px;font-size:47.5px;font-weight:500;transform:translate(-50%,-50%)!important;font-variant-numeric:tabular-nums}
+.today-fill{position:absolute;left:678.9px;top:559.2px;height:12.5px;width:0;border-radius:7px;background:var(--cyan)}
+
+/* 세로 화면(휴대폰): 순서는 두 줄로 */
+@media (max-aspect-ratio:1/1){
+  .steps{display:grid;grid-template-columns:repeat(3,auto);column-gap:22px;row-gap:2px;font-size:12px}
+  .stage-wrap{max-height:none}
+}
+
+/* 소리 시작 안내: 첫 터치로 소리를 켠다(뒤에서는 소리 없이 이미 재생 중) */
+.gate{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;border:0;background:rgba(0,0,0,.55);color:#fff;font:inherit;cursor:pointer;transition:opacity .5s}
+.gate b{font-size:clamp(15px,1.6vw,22px);font-weight:500;letter-spacing:.02em}
+.gate-ico{width:64px;height:64px;border:1.5px solid rgba(255,255,255,.8);border-radius:50%;position:relative;animation:gate-pulse 1.8s ease-in-out infinite}
+.gate-ico::after{content:"";position:absolute;left:25px;top:20px;border-left:18px solid #fff;border-top:12px solid transparent;border-bottom:12px solid transparent}
+@keyframes gate-pulse{50%{transform:scale(1.08);border-color:var(--cyan)}}
+.gate.off{opacity:0;pointer-events:none}
+/* 소리 켜기/끄기 */
+.snd{position:fixed;z-index:15;right:max(20px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));width:40px;height:40px;border:1px solid rgba(255,255,255,.35);border-radius:50%;background:none;cursor:pointer}
+.snd i{position:absolute;inset:0;background:#fff;-webkit-mask:var(--ico) center/20px no-repeat;mask:var(--ico) center/20px no-repeat;opacity:.75;
+  --ico:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 9h4l5-4v14l-5-4H4z'/><path d='M16 8l6 8M22 8l-6 8' stroke='black' stroke-width='2'/></svg>")}
+.sound-on .snd i{--ico:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 9h4l5-4v14l-5-4H4z'/><path d='M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12' fill='none' stroke='black' stroke-width='2'/></svg>")}
+
+/* 위·아래 띠: 사파리 상단 막대와 같은 밝은 회색 + 검은 글자 */
+:root{--band:#f2f2f7;--bink:#141414;--bdim:rgba(20,20,20,.38)}
+html,body{background:var(--band)}
+.band{background:var(--band);color:var(--bink)}
+.step{color:var(--bdim)}
+.step::after{background:rgba(20,20,20,.12)}
+.step i{background:var(--bink)}
+.step.on{color:var(--bink)}
+.step.done{color:rgba(20,20,20,.62)}
+.cap-num{color:var(--bdim)}
+.cap-desc{color:rgba(20,20,20,.72)}
+.snd{border-color:rgba(20,20,20,.3)}
+.snd i{background:var(--bink)}
+/* 아래 홈 막대에 글자가 걸리지 않게 위로 */
+.band-bottom{padding-bottom:calc(env(safe-area-inset-bottom) + 34px)}
+.snd{bottom:calc(max(18px,env(safe-area-inset-bottom)) + 26px)}
+
+/* 장면은 화면 폭 꽉 채움. 위 띠는 순서 줄만큼만, 남는 높이는 아래 글 묶음에 준다 */
+.stage-wrap{max-height:calc(100dvh - 160px)}
+.band-top{flex:0 0 auto;padding-top:calc(env(safe-area-inset-top) + 22px);padding-bottom:18px}
+.steps{font-size:clamp(11px,1.05vw,15px)}
+.step{padding:.6em 0 .75em}
+.band-bottom{flex:1 1 0;justify-content:flex-start;padding-top:26px;padding-bottom:calc(env(safe-area-inset-bottom) + 22px);gap:.4em}
+.cap-name{font-size:clamp(17px,1.8vw,26px)}
+.cap-desc{font-size:clamp(12px,1.2vw,17px)}
+
+/* 노트북·모니터처럼 넓은 화면: 아래 글 묶음이 잘리지 않게 장면 높이를 줄이고 여백을 좁힌다 */
+@media (min-aspect-ratio:3/2){
+  .stage-wrap{max-height:calc(100dvh - 210px)}
+  .band-bottom{padding-top:16px;padding-bottom:18px;gap:.3em}
+}

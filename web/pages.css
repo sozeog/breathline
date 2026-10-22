@@ -1,0 +1,632 @@
+/* 밝은 무대 페이지 공통 — 표지와 같은 회색·잉크 톤. 오른쪽에는 3D 돌탑이 계속 서 있다. */
+.light-page{
+  --bg:#c9c9c6; --ink:#141414; --ink-2:rgba(20,20,20,.64); --ink-3:rgba(20,20,20,.42); --hair:rgba(20,20,20,.18);
+  --gutter:clamp(32px,5vw,96px);
+  position:relative;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
+}
+.lp-canvas{position:absolute;inset:0;opacity:0;transition:opacity .6s ease}
+.lp-canvas canvas{display:block;width:100%;height:100%}
+.light-page.is-ready .lp-canvas{opacity:1}
+
+/* 상단: 브랜드 · 과정 · 입력 상태 */
+.lp-top{position:absolute;z-index:5;top:0;left:0;right:0;display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;gap:32px;padding:36px var(--gutter);font-size:15px;color:var(--ink-3)}
+.lp-route{display:flex;gap:26px;margin:0;padding:0;list-style:none;font-size:14px}
+.lp-route li{display:flex;gap:7px;align-items:baseline;position:relative;padding-bottom:10px;transition:color .4s}
+.lp-route li span{font-variant-numeric:tabular-nums;font-size:12px}
+.lp-route li.done{color:var(--ink-2)}
+.lp-route li.now{color:var(--ink);font-weight:600}
+.lp-route li.now::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--ink)}
+/* 진도 표시: 가리키고 머무르면 그 단계로 이동 */
+.lp-step{position:relative;display:flex;gap:7px;align-items:baseline;margin:0;padding:0;border:0;background:none;color:inherit;font:inherit;cursor:pointer;transition:color .25s}
+.lp-step span{font-variant-numeric:tabular-nums;font-size:12px}
+.lp-step .dwell{position:absolute;left:0;bottom:-10px;height:2px;width:var(--dwell,0%);background:currentColor}
+.lp-step:hover,.lp-step.gaze{color:var(--ink)}
+.page-route .lp-step:hover,.page-route .lp-step.gaze,.page-dive .lp-step:hover,.page-dive .lp-step.gaze{color:#fff}
+button.route-step{margin:0;padding:0;border:0;background:none;font:inherit;cursor:pointer}
+button.route-step:hover,button.route-step.gaze{color:#fff}
+.lp-meta{display:flex;justify-content:flex-end;gap:28px}
+.lp-meta b{margin-left:8px;font-weight:400;color:var(--ink);font-variant-numeric:tabular-nums}
+
+.lp-back{position:relative;width:52px;height:52px;margin:-14px 0 0 -14px;display:grid;place-items:center;border:0;border-radius:50%;background:none;color:var(--ink);cursor:pointer;transition:background .25s}
+.lp-back svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s cubic-bezier(.2,.9,.2,1.2)}
+.lp-back:hover,.lp-back.gaze,.lp-back:focus-visible{background:rgba(20,20,20,.07);outline:none}
+.lp-back:hover svg,.lp-back.gaze svg{transform:translateX(-4px)}
+.lp-back .dwell{display:none}
+
+/* 공통 제목 */
+.lp-kicker{margin:0 0 20px;font-size:16px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.lp-title{margin:0;font-size:clamp(52px,4.2vw,80px);line-height:1.06;font-weight:700;letter-spacing:-.035em}
+
+/* 하단 안내 한 줄 — 표지의 안내와 같은 형식 */
+.lp-hint{position:absolute;z-index:5;left:var(--gutter);bottom:clamp(40px,7vh,84px);margin:0;display:flex;align-items:center;gap:16px}
+.lp-hint i{position:relative;flex:none;width:10px;height:10px;border-radius:50%;background:var(--ink)}
+.lp-hint i::after{content:"";position:absolute;inset:-6px;border:1px solid var(--ink);border-radius:50%;animation:hint-ring 2.4s cubic-bezier(.2,.7,.2,1) infinite}
+.lp-hint span{display:flex;flex-direction:column;gap:6px}
+.lp-hint b{font-size:19px;font-weight:600}
+.lp-hint small{font-size:14px;color:var(--ink-3)}
+.lp-cairn-caption{position:absolute;z-index:5;left:0;top:0;margin:0;font-size:14px;color:var(--ink-3);white-space:nowrap;transform:translate3d(-999px,-999px,0);pointer-events:none}
+.lp-toast{position:absolute;z-index:8;left:50%;top:110px;transform:translateX(-50%);padding:12px 18px;background:var(--ink);color:#f2f1ed;font-size:15px}
+
+/* ---- 01 신청 ---- */
+.apply{position:absolute;z-index:4;left:var(--gutter);top:calc(50% - 20px);transform:translateY(-50%);width:min(760px,48vw)}
+.apply .lp-title{margin-bottom:56px}
+
+.cal{width:min(560px,100%)}
+.cal-head{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:16px;border-bottom:1px solid var(--hair)}
+.cal-head b{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.cal-head span{font-size:14px;color:var(--ink-3)}
+.cal-week,.cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-week{padding:14px 0 6px;font-size:13px;color:var(--ink-3)}
+.cal-week span,.cal-day{text-align:center}
+.cal-day{height:48px;display:grid;place-items:center;font-size:17px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.cal-day.past{color:rgba(20,20,20,.26)}
+.cal-day.live{position:relative;width:64px;height:64px;margin:-8px auto;padding:0;border:1.5px solid var(--ink);border-radius:50%;background:transparent;color:var(--ink);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:background .35s,color .35s,transform .45s cubic-bezier(.2,.9,.2,1.3)}
+.cal-day.live em{font-style:normal;font-size:20px;font-weight:700;line-height:1}
+.cal-day.live small{font-size:10px;letter-spacing:.02em}
+.cal-day.live::after{content:"";position:absolute;inset:-1.5px;border:1.5px solid var(--ink);border-radius:50%;opacity:0}
+.cal-day.live:hover,.cal-day.live.gaze,.cal-day.live:focus-visible{transform:scale(1.08);outline:none}
+.cal-empty{height:48px}
+
+.apply-pick{position:relative;width:min(560px,100%);margin-top:40px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;padding:22px 0;border:0;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);background:none;color:var(--ink);text-align:left;cursor:pointer}
+.pick-body b{display:block;font-size:24px;font-weight:600;letter-spacing:-.01em}
+.pick-body small{display:block;margin-top:8px;font-size:15px;color:var(--ink-2)}
+.pick-state{position:relative;display:grid;font-size:16px;font-weight:600}
+.pick-state>span{grid-area:1/1;transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
+.pick-go::after{content:" →";display:inline-block;transition:transform .35s cubic-bezier(.2,.9,.2,1.2)}
+.apply-pick:hover .pick-go::after,.apply-pick.gaze .pick-go::after,.apply-pick:focus-visible .pick-go::after{transform:translateX(6px)}
+.apply-pick:focus-visible{outline:none}
+.pick-done{opacity:0;transform:translateY(8px)}
+.apply-pick .dwell{position:absolute;left:0;bottom:-1px;height:2px;width:var(--dwell,0%);background:var(--ink);transition:width .08s linear}
+
+/* 확정 — 날짜가 채워지고 파동이 번진 뒤 다음 단계로 */
+.is-confirmed .cal-day.live{background:var(--ink);color:#f2f1ed}
+.is-confirmed .cal-day.live::after{animation:apply-ripple 1s cubic-bezier(.2,.7,.2,1) forwards}
+.is-confirmed .pick-go{opacity:0;transform:translateY(-8px)}
+.is-confirmed .pick-done{opacity:1;transform:none}
+.is-confirmed .apply-pick .dwell{width:100%}
+@keyframes apply-ripple{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.6);opacity:0}}
+
+@media (prefers-reduced-motion:reduce){
+  .lp-hint i::after{animation:none}
+  .is-confirmed .cal-day.live::after{animation:none}
+}
+
+/* ---- 02 도착 · FIELD KIT ---- */
+/* 도착 영상: 처음엔 화면 전체, 끝나면 왼쪽 작은 창으로 줄어든다 */
+.kit-video{position:absolute;z-index:20;left:0;top:0;width:100%;height:100%;object-fit:cover;transform-origin:0 0;filter:grayscale(1) contrast(1.05) brightness(1.02);
+  transition:transform 1.3s cubic-bezier(.7,0,.2,1)}
+.kit-video.is-card{z-index:4;transform:translate(var(--gutter),calc(50vh - 40px)) scale(.26)}
+.kit-video-card{position:absolute;z-index:3;left:var(--gutter);top:calc(50vh - 40px);width:26vw;height:26vh;object-fit:cover;filter:grayscale(1) contrast(1.05) brightness(1.02);opacity:0;transition:opacity .3s 1.2s}
+.is-arrived .kit-video-card{opacity:1}
+.kit-arrive-caption{position:absolute;z-index:21;left:var(--gutter);bottom:clamp(40px,7vh,84px);display:flex;align-items:baseline;gap:20px;color:#fff;font-size:clamp(40px,3.4vw,64px);font-weight:700;letter-spacing:-.03em;text-shadow:0 2px 30px rgba(0,0,0,.25);transition:opacity .5s}
+.kit-arrive-caption span{font-size:.45em;font-weight:500;font-variant-numeric:tabular-nums;opacity:.85}
+.is-arrived .kit-arrive-caption{opacity:0;pointer-events:none}
+
+/* 영상이 줄어든 뒤 나머지 화면이 나타난다 */
+.page-kit .lp-top,.page-kit .kit-copy,.page-kit .lp-hint,.page-kit .lp-canvas{opacity:0;transition:opacity .8s .6s}
+.page-kit.is-arrived .lp-top,.page-kit.is-arrived .kit-copy,.page-kit.is-arrived .lp-hint{opacity:1}
+.page-kit.is-arrived.is-ready .lp-canvas{opacity:1}
+.page-kit .lp-cairn-caption{display:none}
+
+.kit-copy{position:absolute;z-index:5;left:var(--gutter);top:17vh;width:min(760px,40vw)}
+.kit-video-caption{position:absolute;left:0;top:calc(59vh - 28px);margin:0;font-size:14px;color:var(--ink-3)}
+.lp-next{position:absolute;left:0;top:calc(59vh + 16px);width:26vw;display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px;padding:20px 0;border:0;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);background:none;color:var(--ink);text-align:left;cursor:pointer;
+  opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .5s,transform .6s cubic-bezier(.2,.8,.2,1)}
+.lp-next b{display:block;font-size:22px;font-weight:600}
+.lp-next small{display:block;margin-top:6px;font-size:14px;color:var(--ink-3)}
+.lp-next-arrow{font-size:24px;transition:transform .35s cubic-bezier(.2,.9,.2,1.2)}
+.lp-next:hover .lp-next-arrow,.lp-next.gaze .lp-next-arrow,.lp-next:focus-visible .lp-next-arrow{transform:translateX(8px)}
+.lp-next:focus-visible{outline:none}
+.lp-next .dwell{position:absolute;left:0;bottom:-1px;height:2px;width:var(--dwell,0%);background:var(--ink);transition:width .08s linear}
+.is-open .lp-next{opacity:1;transform:none;pointer-events:auto;transition-delay:1.6s}
+
+/* 가방 위 선택 영역 (3D 위치에 맞춰 크기가 정해진다) */
+.kit-core{position:absolute;z-index:6;padding:0;border:0;background:none;cursor:pointer;border-radius:30%}
+.kit-core:focus-visible{outline:1px solid var(--ink);outline-offset:6px}
+.is-open .kit-core,.page-kit:not(.is-arrived) .kit-core{display:none}
+
+/* 제품 칸 — 이름만 가지런히, 손이나 마우스를 대면 설명이 펼쳐진다 */
+.kit-cell{position:absolute;z-index:5;left:0;top:0;height:calc(var(--item-h,200px) + 130px);pointer-events:none;opacity:0;transition:opacity .5s}
+.is-open .kit-cell{pointer-events:auto;opacity:1;transition-delay:calc(.9s + var(--i) * .1s)}
+.kit-name{position:absolute;left:-50px;right:-50px;top:calc(var(--item-h,200px) + 12px);text-align:center;pointer-events:none}
+.kit-name b{position:relative;display:inline-block;white-space:nowrap;font-size:16px;font-weight:600;letter-spacing:.01em;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.kit-name b span{position:absolute;right:100%;top:50%;transform:translateY(-45%);margin-right:9px;font-size:12px;font-weight:500;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.kit-name p{width:236px;margin:10px auto 0;font-size:13px;line-height:1.6;text-align:center;word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty;color:var(--ink-2);opacity:0;transform:translateY(-6px);transition:opacity .3s,transform .35s cubic-bezier(.2,.8,.2,1)}
+.kit-cell:hover .kit-name p,.kit-cell.gaze .kit-name p{opacity:1;transform:none}
+.kit-cell:hover .kit-name b,.kit-cell.gaze .kit-name b{transform:translateY(-2px)}
+.kit-cell .dwell{display:none}
+
+/* 가방 바로 아래 안내 — 무엇을 해야 하는지 가방 옆에서 바로 읽힌다 */
+.kit-bag-hint{position:absolute;z-index:6;left:0;top:0;margin:0;display:flex;align-items:center;gap:14px;white-space:nowrap;font-size:19px;font-weight:600;transform:translate3d(-999px,-999px,0);pointer-events:none;opacity:0;transition:opacity .6s .9s}
+.kit-bag-hint i{position:relative;width:10px;height:10px;border-radius:50%;background:var(--ink)}
+.kit-bag-hint i::after{content:"";position:absolute;inset:-6px;border:1px solid var(--ink);border-radius:50%;animation:hint-ring 2.4s cubic-bezier(.2,.7,.2,1) infinite}
+.is-arrived .kit-bag-hint{opacity:1}
+.is-open .kit-bag-hint{opacity:0;transition-delay:0s}
+
+/* ---- 03 이전 기록 받기 ---- */
+.page-receive .lp-cairn-caption{display:none}
+.rec-copy{position:absolute;z-index:5;left:var(--gutter);top:17vh;width:min(760px,40vw)}
+.rec-received{width:min(560px,31vw)}
+.rec-received{margin-top:9vh}
+.rec-from{margin:0 0 18px;font-size:14px;color:var(--ink-3);opacity:0;transition:opacity .5s .5s}
+.trace-rows{margin:0;border-top:1px solid var(--hair)}
+.trace-row{display:grid;grid-template-columns:120px 1fr;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--hair);
+  opacity:0;transform:translateY(10px);transition:opacity .5s,transform .6s cubic-bezier(.2,.8,.2,1)}
+.trace-row dt{font-size:14px;color:var(--ink-3)}
+.trace-row dd{margin:0;font-size:24px;font-weight:600;letter-spacing:-.01em}
+.trace-row dd time{display:block;margin-top:6px;font-size:14px;font-weight:400;color:var(--ink-3)}
+.rec-note{margin:22px 0 0;white-space:nowrap;font-size:15px;line-height:1.6;color:var(--ink-2);word-break:keep-all;opacity:0;transition:opacity .6s}
+.rec-next{position:relative;left:auto;top:auto;width:100%;margin-top:34px}
+.is-received .rec-from{opacity:1}
+.is-received .trace-row{opacity:1;transform:none;transition-delay:calc(.7s + var(--i) * .22s)}
+.is-received .rec-note{opacity:1;transition-delay:1.5s}
+.is-received .rec-next{opacity:1;transform:none;pointer-events:auto;transition-delay:1.9s}
+
+.today-core{position:absolute;z-index:6;padding:0;border:0;background:none;cursor:pointer;border-radius:30%}
+.today-core:focus-visible{outline:1px solid var(--ink);outline-offset:6px}
+.is-received .today-core{display:none}
+.is-received .today-hint{opacity:0;transition-delay:0s}
+
+/* ---- 04 버디 확인 ---- */
+.page-buddy .lp-cairn-caption{display:none}
+.bud-copy{position:absolute;z-index:5;left:var(--gutter);top:17vh;width:min(760px,40vw)}
+.page-buddy .lp-title{white-space:nowrap}
+.bud-ref{margin-top:7vh;width:min(520px,29vw);padding-top:18px;border-top:1px solid var(--hair)}
+.bud-ref-label{margin:0;font-size:14px;color:var(--ink-3)}
+.bud-ref-text{margin:10px 0 0;font-size:24px;line-height:1.4;font-weight:600;letter-spacing:-.01em}
+.bud-ref-lead{margin:14px 0 0;font-size:16px;line-height:1.6;color:var(--ink-2);word-break:keep-all}
+.bud-foot{width:min(520px,29vw);margin:18px 0 0;padding-top:18px;border-top:1px solid var(--hair);font-size:14px;line-height:1.6;color:var(--ink-3);word-break:keep-all}
+.bud-next{position:relative;left:auto;top:auto;width:min(520px,29vw);margin-top:18px}
+.is-connected .bud-next{opacity:1;transform:none;pointer-events:auto;transition-delay:1.1s}
+
+/* 손 돌 위 선택 영역(3D 위치에 맞춰진다) */
+.hand-target{position:absolute;z-index:6;padding:0;border:0;background:none;cursor:pointer;border-radius:30%}
+.hand-target:focus-visible{outline:1px solid var(--ink);outline-offset:6px}
+.you-ok [data-hand-stone="you"],.buddy-ok [data-hand-stone="buddy"]{cursor:default}
+
+/* 두 돌 사이 안내 */
+.bud-hint{position:absolute;z-index:5;left:0;top:0;margin:0;text-align:center;font-size:17px;font-weight:600;line-height:1.5;transform:translate3d(-999px,-999px,0);pointer-events:none;transition:opacity .4s}
+.is-connected .bud-hint{opacity:0}
+
+/* 체크 목록 — 확인되면 항목 앞에 체크가 그려진다 */
+.hand-list{position:absolute;z-index:5;left:0;top:0;width:320px;transform:translate3d(-999px,-999px,0);pointer-events:none}
+.hand-tag{margin:0 0 12px;text-align:center;font-size:15px;color:var(--ink-2)}
+.hand-tag b{margin-right:10px;font-size:15px;font-weight:700;letter-spacing:.06em;color:var(--ink)}
+.hand-list ul{margin:0;padding:0;list-style:none;border-top:1px solid var(--hair)}
+.hand-list li{position:relative;padding:11px 0 11px 30px;border-bottom:1px solid var(--hair);font-size:15px;line-height:1.45;color:var(--ink-2);word-break:keep-all}
+.hand-list li::before{content:"";position:absolute;left:2px;top:13px;width:16px;height:16px;border:1.5px solid var(--ink-3);border-radius:50%;transition:background .3s,border-color .3s}
+.hand-list li::after{content:"";position:absolute;left:7px;top:16px;width:5px;height:8px;border:solid #f2f1ed;border-width:0 2px 2px 0;transform:rotate(45deg) scale(0);transition:transform .35s cubic-bezier(.2,.9,.2,1.4)}
+.hand-list.checked li{color:var(--ink)}
+.hand-list.checked li::before{background:var(--ink);border-color:var(--ink)}
+.hand-list.checked li::after{transform:rotate(45deg) scale(1)}
+.hand-list.checked li:nth-child(2)::before,.hand-list.checked li:nth-child(2)::after{transition-delay:.15s}
+
+.is-connected .hand-target{display:none}
+
+/* ---- 05 경로 판단: 파도 영상 전체 + 검은 막 + 가운데 저울 ---- */
+.page-route{background:#111;color:#fff}
+.page-route .lp-cairn-caption{display:none}
+.route-sea{position:absolute;z-index:0;inset:0;overflow:hidden}
+.route-sea video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05) brightness(.95)}
+.route-sea::after{content:"";position:absolute;inset:0;background:rgb(8,9,10);opacity:0;transition:opacity 1.2s ease}
+.page-route.is-band .route-sea::after{opacity:.62}
+.page-route .lp-canvas{z-index:1}
+/* 상단 바는 흰 글씨 */
+.page-route .lp-top{color:rgba(255,255,255,.6)}
+.page-route .lp-route li.now,.page-route .lp-meta b,.page-route .lp-back{color:#fff}
+.page-route .lp-route li.now::after{background:#fff}
+.page-route .lp-route li.done{color:rgba(255,255,255,.8)}
+.page-route .lp-back:hover,.page-route .lp-back.gaze{background:rgba(255,255,255,.1)}
+
+/* 위 가운데: 상황 */
+.route-ctx{position:absolute;z-index:3;left:0;right:0;top:128px;text-align:center;transition:top 1.2s cubic-bezier(.7,0,.2,1)}
+.page-route:not(.is-band) .route-ctx{top:calc(50% - 90px);text-shadow:0 2px 30px rgba(0,0,0,.35)}
+.route-ctx .k{margin:0;font-size:15px;color:rgba(255,255,255,.62);letter-spacing:.02em}
+.route-ctx h2{margin:12px 0 0;font-size:64px;line-height:1.1;font-weight:700;letter-spacing:-.035em}
+.route-ctx .ev{display:inline-flex;gap:12px;margin:18px 0 0;font-size:16px;color:rgba(255,255,255,.62);opacity:0;transition:opacity .6s .9s}
+.route-ctx .ev b{font-weight:500;color:rgba(255,255,255,.9)}
+.page-route.is-band .route-ctx .ev{opacity:1}
+
+/* 양 끝 돌 바로 아래: 선택지 (3D 위치에 맞춰진다) */
+.bal-end{position:absolute;z-index:3;left:0;top:0;width:340px;padding:0;border:0;background:none;color:#fff;text-align:center;cursor:pointer;transform:translate3d(-999px,-999px,0);
+  opacity:0;transition:opacity .4s}
+.page-route.is-band .bal-end{opacity:calc(.3 + .7 * var(--w,1));transition-delay:0s}
+.bal-end.left{--w:clamp(0,calc(.5 + var(--lean,0) * .5),1)}
+.bal-end.right{--w:clamp(0,calc(.5 - var(--lean,0) * .5),1)}
+.bal-end .opt-index{display:block;font-size:14px;color:rgba(255,255,255,.55)}
+.bal-end b{display:block;margin-top:8px;font-size:26px;line-height:1.3;font-weight:600;letter-spacing:-.015em;word-break:keep-all}
+.bal-end em{display:block;margin-top:10px;font-style:normal;font-size:14px;font-weight:600;opacity:0;transition:opacity .3s}
+.bal-end:focus-visible{outline:1px solid #fff;outline-offset:8px}
+.page-route .bal-end.picked{opacity:1}.bal-end.picked em{opacity:1}
+.page-route.is-picked .bal-end:not(.picked){opacity:.15}
+
+/* 버티기 게이지 — 기운 쪽 끝 위 */
+.bal-hold{position:absolute;z-index:4;left:0;top:0;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:#fff;white-space:nowrap;transform:translate3d(-999px,-999px,0);opacity:0;transition:opacity .25s;pointer-events:none}
+.bal-hold.on{opacity:1}
+.bal-hold i{width:28px;height:28px;border-radius:50%;background:conic-gradient(#fff var(--p,0%),rgba(255,255,255,.2) 0);-webkit-mask:radial-gradient(closest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));mask:radial-gradient(closest-side,transparent calc(100% - 3px),#000 calc(100% - 2px))}
+
+/* 아래 가운데: 질문과 손동작 */
+.route-ask{position:absolute;z-index:3;left:0;right:0;bottom:64px;text-align:center;opacity:0;transition:opacity .6s 1.2s}
+.page-route.is-band .route-ask{opacity:1}
+.page-route.is-picked .route-ask{opacity:0;transition-delay:0s}
+.route-ask h3{margin:0;font-size:24px;font-weight:600;letter-spacing:-.01em}
+.route-ask .how{display:inline-flex;align-items:center;gap:12px;margin:12px 0 0;font-size:15px;color:rgba(255,255,255,.6)}
+.route-ask .how i{display:inline-flex;align-items:center;gap:8px;font-style:normal;font-weight:600;color:#fff}
+.route-ask .how svg{width:34px;height:12px;fill:none;stroke:#fff;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+@media (prefers-reduced-motion:reduce){.route-sea::after,.route-ctx{transition:none}}
+
+/* ---- 06 잠수·기록: 어두운 바다를 비추며, 대상마다 다른 행동과 기록 ---- */
+.page-dive{background:#0b0d0e;color:#fff}
+.page-dive .lp-cairn-caption{display:none}
+.page-dive .lp-top{color:rgba(255,255,255,.6)}
+.page-dive .lp-route li.now,.page-dive .lp-meta b,.page-dive .lp-back{color:#fff}
+.page-dive .lp-route li.now::after{background:#fff}
+.page-dive .lp-route li.done{color:rgba(255,255,255,.8)}
+.page-dive .lp-back:hover,.page-dive .lp-back.gaze{background:rgba(255,255,255,.1)}
+
+.dive-stage{position:absolute;inset:0;overflow:hidden;--mx:50%;--my:72%;--murk:0;--tug:0;--pin:0}
+.dive-bg{position:absolute;inset:-2%;width:104%;height:104%;object-fit:cover;filter:grayscale(1) contrast(1.08) brightness(.9) blur(calc(var(--murk) * 9px));transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.scene-plastic.phase-pull .dive-bg{transform:translateX(calc(var(--tug) * 10px))}
+/* 시야 저하: 뿌연 막이 짙어진다 */
+.dive-haze{position:absolute;inset:0;background:rgba(150,160,160,.55);opacity:calc(var(--murk) * .9);pointer-events:none}
+/* 손전등: 어두운 막에 손 위치로 구멍이 뚫린다 */
+.scene-plastic .dive-bg{filter:blur(calc(var(--murk) * 9px))}
+.dive-dark{position:absolute;inset:0;background:rgba(3,5,6,.62);-webkit-backdrop-filter:grayscale(1) brightness(.55);backdrop-filter:grayscale(1) brightness(.55);pointer-events:none;
+  -webkit-mask:radial-gradient(circle 250px at var(--mx) var(--my),transparent 0,transparent 45%,#000 100%);mask:radial-gradient(circle 250px at var(--mx) var(--my),transparent 0,transparent 45%,#000 100%);transition:opacity .9s ease}
+.phase-ready .dive-dark,.phase-pull .dive-dark,.phase-keep .dive-dark,.phase-done .dive-dark,.phase-stop .dive-dark{opacity:.7}
+.scene-visibility .dive-dark{opacity:.35;-webkit-mask:none;mask:none}
+
+/* 발견 표시: 찾기 전엔 보이지 않다가 드러난다 */
+.dive-find{position:absolute;left:var(--fx);top:var(--fy);transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .5s}
+.dive-find i{display:block;width:210px;height:210px;border:1.5px solid rgba(255,255,255,.85);border-radius:50%;transform:scale(.7);transition:transform .7s cubic-bezier(.2,.9,.2,1.2)}
+.dive-find span{position:absolute;left:50%;top:calc(100% + 14px);transform:translateX(-50%);white-space:nowrap;font-size:17px;font-weight:600}
+.phase-ready .dive-find,.phase-pull .dive-find,.phase-keep .dive-find,.phase-done .dive-find,.phase-stop .dive-find{opacity:1}
+.scene-plastic .dive-find{display:none} /* 플라스틱은 AR 인식 틀로 표시 */
+.phase-ready .dive-find i,.phase-pull .dive-find i,.phase-keep .dive-find i,.phase-done .dive-find i{transform:scale(1)}
+.scene-visibility .dive-find{display:none}
+
+/* 플라스틱: 병 양옆의 손모양 돌 두 개 — 켜진 쪽으로 손을 가져가면 반대쪽이 켜진다 */
+.dive-pull{position:absolute;z-index:4;inset:0;opacity:0;pointer-events:none;transition:opacity .4s}
+.phase-pull .dive-pull{opacity:1}
+.pull-target{position:absolute;top:49%;width:170px;height:170px;margin:-85px 0 0 -85px;display:grid;place-items:center}
+.pull-target.l{left:31%}.pull-target.r{left:69%}
+.pull-target img{position:relative;width:104px;height:auto;opacity:.32;filter:grayscale(1) drop-shadow(0 10px 18px rgba(0,0,0,.5));transition:opacity .25s,filter .25s,transform .25s}
+.pull-target.l img{transform:scaleX(-1)}
+.pull-target .ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,255,255,.28);transition:border-color .25s,box-shadow .25s}
+.pull-target .chev{position:absolute;top:50%;font-size:54px;font-weight:200;line-height:1;color:#fff;opacity:0;transform:translateY(-54%)}
+.pull-target.l .chev{right:calc(100% + 16px)}.pull-target.r .chev{left:calc(100% + 16px)}
+.pull-target.on img{opacity:1;filter:none}
+.pull-target.on .ring{border-color:#fff;box-shadow:0 0 28px rgba(255,255,255,.25),inset 0 0 22px rgba(255,255,255,.12);animation:pull-breathe 1s ease-in-out infinite}
+.pull-target.on .chev{opacity:.9;animation:pull-chev .8s ease-in-out infinite}
+.pull-target.hit .ring{animation:pull-hit .35s ease-out}
+@keyframes pull-breathe{50%{transform:scale(1.06)}}
+@keyframes pull-chev{50%{opacity:.35}}
+@keyframes pull-hit{0%{transform:scale(1);box-shadow:0 0 0 rgba(255,255,255,.7)}100%{transform:scale(1.25);box-shadow:0 0 60px rgba(255,255,255,0);opacity:0}}
+.pull-stats{display:none;align-items:baseline;justify-content:center;gap:6px;margin:14px 0 0;font-size:16px;color:rgba(255,255,255,.7)}
+.pull-stats i{width:40px}
+.pull-stats b{font-size:26px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums}
+.is-pulling .pull-stats{display:flex}
+/* 미니게임 중엔 손 목표·안내·타이머만 남기고 주변 정보는 흐리게 걷어낸다 */
+.page-dive .lp-top,.page-dive .ar-hud,.page-dive .ar-tag-body,.page-dive .ar-icon{transition:opacity .45s,filter .45s}
+.page-dive.is-pulling .lp-top,.page-dive.is-pulling .ar-hud{opacity:0;filter:blur(6px);pointer-events:none}
+.page-dive .ar-target{transition:filter .45s}
+.page-dive.is-pulling .ar-target{filter:opacity(.35)}
+.page-dive.is-pulling .ar-tag{visibility:hidden}
+.page-dive.is-pulling .scene-plastic .dive-bg{filter:blur(7px) brightness(.8)}
+.scene-plastic .dive-bg{transition:transform .35s cubic-bezier(.2,.8,.2,1),filter .5s}
+/* 인식 → 시작 확인: 태그가 다 뜬 뒤 버튼이 나타나고, 머무르면 좌우 당기기 시작 */
+.dive-start{position:absolute;left:50%;top:calc(100% + 18px);display:none;place-items:center;width:120px;height:169px;margin:0;padding:0;border:0;background:none;color:#fff;font:inherit;cursor:pointer;opacity:0;transform:translateX(-50%)}
+/* 손바닥 윤곽 + 머무르는 동안 손바닥이 아래에서 위로 차오른다 */
+.dive-start .palm-line{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.dive-start .palm-line path{fill:rgba(0,0,0,.18);stroke:#fff;stroke-width:1.6;stroke-linejoin:round;vector-effect:non-scaling-stroke;transition:stroke-width .2s}
+.dive-start .palm-fill{position:absolute;inset:0;background:linear-gradient(to top,rgba(255,255,255,.34) var(--dwell,0%),transparent 0);-webkit-mask:url(assets/dive/palm.svg) center/100% 100% no-repeat;mask:url(assets/dive/palm.svg) center/100% 100% no-repeat}
+/* START는 손바닥 아래쪽 넓은 면 안쪽, 윤곽선과 충분히 떨어지게 */
+.dive-guide .dive-start b{position:absolute;left:22%;right:4%;top:66%;margin:0;text-align:center;font-size:15px;font-weight:700;line-height:1;letter-spacing:.08em;white-space:nowrap}
+.dive-start:hover .palm-line path,.dive-start.gaze .palm-line path{stroke-width:2.6}
+.is-ready .dive-guide{bottom:250px}
+.is-ready .dive-start{display:grid;animation:start-in .5s 1.3s ease-out forwards}
+@keyframes start-in{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+.dive-guide small:empty{display:none}
+
+/* 그물: 경계선 — 안으로 들어가면 경고, 바깥에 머무르면 위치 핀 */
+.dive-zone{position:absolute;left:var(--fx);top:var(--fy);width:640px;height:640px;margin:-320px 0 0 -320px;border:1.5px dashed rgba(255,255,255,.55);border-radius:50%;pointer-events:none;opacity:0;transition:opacity .5s,border-color .3s}
+.dive-zone i{position:absolute;inset:170px;border-radius:50%;background:rgba(255,255,255,calc(var(--pin) * .9));transform:scale(calc(.2 + var(--pin) * .8));transition:transform .15s}
+.scene-net.phase-keep .dive-zone,.scene-net.phase-done .dive-zone{opacity:1}
+.scene-net.too-near .dive-zone{border-color:#fff;border-style:solid;animation:zone-warn .5s ease}
+.scene-net.too-near .dive-find i{border-width:3px}
+@keyframes zone-warn{0%,100%{transform:scale(1)}40%{transform:scale(1.04)}}
+.scene-net.phase-done .dive-zone i{background:#fff;transform:scale(.12)}
+
+/* 시야: 오른쪽 위 수치 */
+.dive-vis{position:absolute;right:var(--gutter);top:140px;text-align:right;opacity:0;transition:opacity .5s}
+.dive-vis span{display:block;font-size:14px;color:rgba(255,255,255,.62)}
+.dive-vis b{display:block;margin-top:4px;font-size:56px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.scene-visibility .dive-vis{opacity:1}
+
+/* 복귀 신호: 화면 위쪽 가운데 */
+.dive-up{position:absolute;left:50%;top:150px;width:360px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 0 16px;border:0;background:none;color:#fff;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .5s}
+.dive-up svg{width:44px;height:44px;fill:none;stroke:#fff;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s cubic-bezier(.2,.9,.2,1.2)}
+.dive-up b{font-size:26px;font-weight:600}
+.dive-up small{font-size:14px;color:rgba(255,255,255,.62)}
+.dive-up .dwell{position:absolute;left:0;bottom:0;height:2px;width:var(--dwell,0%);background:#fff}
+.scene-visibility.phase-signal .dive-up{opacity:1;pointer-events:auto}
+.dive-up:hover svg,.dive-up.gaze svg{transform:translateY(-8px)}
+
+/* 위: 수심·버디·경로 한 줄 */
+.dive-hud{position:absolute;z-index:5;left:0;right:0;top:92px;margin:0;display:block;padding:0;border:0;background:none;text-align:center;font-size:14px;color:rgba(255,255,255,.62)}
+.dive-hud i{display:inline-block;width:3px;height:3px;margin:0 12px;border-radius:50%;background:currentColor;vertical-align:middle}
+
+/* 아래 가운데: 지금 할 일 */
+.dive-guide{position:absolute;z-index:5;left:0;right:0;bottom:132px;transition:bottom .3s;text-align:center;text-shadow:0 2px 24px rgba(0,0,0,.5)}
+.dive-guide b{display:block;font-size:30px;font-weight:700;letter-spacing:-.02em}
+.dive-guide small{display:block;margin-top:10px;font-size:16px;color:rgba(255,255,255,.66)}
+
+/* 맨 아래: 서로 다른 기록 조각이 하나씩 쌓인다 */
+.dive-records{position:absolute;z-index:5;left:50%;bottom:28px;display:flex;gap:40px;margin:0;padding:0;list-style:none;transform:translateX(-50%)}
+.drec{min-width:220px;padding-top:12px;border-top:2px solid #fff;animation:rec-in .6s cubic-bezier(.2,.8,.2,1)}
+.drec span{display:block;font-size:12px;letter-spacing:.04em;color:rgba(255,255,255,.62)}
+.drec b{display:block;margin-top:6px;font-size:17px;font-weight:600}
+.drec small{display:block;margin-top:4px;font-size:13px;color:rgba(255,255,255,.55)}
+.drec.place{border-top-style:dashed}
+.drec.judge{border-top:2px solid rgba(255,255,255,.4);border-left:2px solid #fff;padding-left:12px}
+@keyframes rec-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+@media (prefers-reduced-motion:reduce){.dive-bg,.dive-find i,.dive-dark{transition:none}.drec{animation:none}}
+/* 어두운 화면(05·06)의 손 커서 */
+body.dark-ui .hand-cursor{border-color:#fff;background:rgba(255,255,255,.12)}
+body.dark-ui .cursor-core{background:#fff}
+body.dark-ui .cursor-progress{background:conic-gradient(#fff calc(var(--cursor-progress,0) * 1%),transparent 0)}
+
+/* ---- AR 고글 인터페이스 (잠수 중 시야) — aqua 선과 숫자, 그림자로 가독성 확보 ---- */
+.page-dive{--ar:#5ff5ee}
+.ar-hud{position:absolute;z-index:4;inset:0;pointer-events:none;color:#fff;text-shadow:0 0 14px rgba(0,0,0,.85)}
+.ar-left{position:absolute;left:112px;top:50%;transform:translateY(-50%);display:grid;gap:22px}
+.ar-left p,.ar-right p{margin:0}
+.ar-left span,.ar-right span{display:block;font-size:15px;font-weight:500;letter-spacing:.04em}
+.ar-left b{display:block;margin-top:6px;font-size:16px;font-weight:400;line-height:1.2;color:var(--ar);font-variant-numeric:tabular-nums}
+.ar-left b small{margin-left:2px;font-size:16px}
+.ar-route em{display:block;margin-top:6px;font-style:normal;font-size:16px;color:var(--ar)}
+.ar-compass{position:absolute;left:50%;top:128px;display:flex;align-items:center;gap:14px;transform:translateX(-50%);font-size:17px;font-weight:300}
+.ar-compass i{width:1px;height:8px;background:rgba(255,255,255,.7)}
+.ar-compass b{position:relative;font-weight:400;color:var(--ar)}
+.ar-compass b::before{content:"";position:absolute;left:50%;top:-18px;border:7px solid transparent;border-top:10px solid var(--ar);transform:translateX(-50%)}
+.ar-right{position:absolute;right:112px;top:50%;transform:translateY(-50%);width:200px}
+.ar-right p+p{margin-top:16px;padding-top:16px;border-top:.8px solid rgba(255,255,255,.7)}
+.ar-right p.ar-count{display:flex;align-items:baseline;gap:18px}
+.ar-right p.ar-count b{display:inline-block;font-size:58px;font-weight:200;line-height:.9;letter-spacing:-.02em;color:var(--ar);font-variant-numeric:tabular-nums}
+.ar-buddy em{display:flex;align-items:center;gap:8px;margin-top:6px;font-style:normal;font-size:16px}
+.ar-buddy em i{width:9px;height:9px;border-radius:50%;background:var(--ar)}
+.ar-buddy em b{margin-left:auto;font-weight:500}
+
+/* 인식 틀: 넓게 떠 있다가 대상 크기로 좁혀 들어오고, 태그가 옆으로 스르륵 */
+.ar-target{position:absolute;z-index:4;left:43.4%;top:31%;width:13.2%;height:36%;pointer-events:none;opacity:0}
+.ar-target.on{opacity:1;animation:holo-in .9s steps(1,end) both}
+.ar-target.on .c{animation:holo-corner .7s cubic-bezier(.2,.9,.2,1) both}
+.ar-target::after{content:"";position:absolute;left:-6%;right:-6%;top:0;height:2px;background:var(--ar);box-shadow:0 0 18px 4px rgba(95,245,238,.55);opacity:0}
+.ar-target.on::after{animation:holo-scan .8s .05s ease-out both}
+@keyframes holo-in{0%{opacity:0}8%{opacity:.8}14%{opacity:.1}22%{opacity:.9}28%{opacity:.25}40%{opacity:1}52%{opacity:.6}60%,100%{opacity:1}}
+@keyframes holo-corner{0%{transform:scale(1.9);filter:drop-shadow(-3px 0 0 rgba(255,60,120,.8)) drop-shadow(3px 0 0 rgba(60,200,255,.8))}100%{transform:none;filter:none}}
+@keyframes holo-scan{0%{top:0;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:100%;opacity:0}}
+.ar-target::before{content:"";position:absolute;inset:0;border:.6px solid var(--ar);opacity:.7}
+.ar-target .c{position:absolute;width:36px;height:40px;border:0 solid var(--ar)}
+.ar-target .tl{left:0;top:0;border-width:4px 0 0 4px}.ar-target .tr{right:0;top:0;border-width:4px 4px 0 0}
+.ar-target .bl{left:0;bottom:0;border-width:0 0 4px 4px}.ar-target .br{right:0;bottom:0;border-width:0 4px 4px 0}
+.ar-tag{position:absolute;left:calc(100% + 18px);top:-4px;display:flex;align-items:flex-start;gap:14px;white-space:nowrap;opacity:0}
+.ar-target.on .ar-tag{animation:holo-tag .8s .45s both}
+@keyframes holo-tag{0%{opacity:0;clip-path:inset(0 0 100% 0);transform:skewX(-8deg);filter:drop-shadow(-4px 0 0 rgba(255,60,120,.7)) drop-shadow(4px 0 0 rgba(60,200,255,.7))}
+ 20%{opacity:1;clip-path:inset(0 0 60% 0)}30%{opacity:.2}40%{opacity:1;clip-path:inset(0 0 20% 0);transform:skewX(4deg)}55%{opacity:.5;transform:translateX(3px)}
+ 70%{opacity:1;clip-path:inset(0 0 0 0);transform:none}100%{opacity:1;clip-path:inset(0 0 0 0);transform:none;filter:none}}
+.ar-icon{display:grid;place-items:center;width:42px;height:45px;border:1.6px solid var(--ar);border-radius:8px}
+.ar-icon svg{width:16px;height:24px;fill:none;stroke:var(--ar);stroke-width:1.4;stroke-linejoin:round}
+.ar-tag-body b{display:block;font-size:19px;font-weight:300;text-shadow:0 0 12px rgba(0,0,0,.8)}
+.ar-tag-body b em{margin-left:14px;font-style:normal;color:var(--ar)}
+.ar-tag-body small{display:block;margin-top:8px;padding-top:6px;border-top:.6px solid rgba(255,255,255,.8);font-size:14px;font-weight:300;text-shadow:0 0 12px rgba(0,0,0,.8)}
+.ar-target.saved::before{animation:ar-save .6s ease}
+@keyframes ar-save{0%{opacity:.7}40%{opacity:0;background:rgba(95,245,238,.18)}100%{opacity:.7}}
+/* 플라스틱 장면이 아닐 땐 AR 인식 틀 없음, 상단 한 줄 안내는 AR 패널로 대체 */
+.page-dive .dive-hud{display:none}
+.ar-right b.bump{animation:col-bump .9s ease}
+@keyframes col-bump{0%{text-shadow:0 0 0 rgba(95,245,238,0)}25%{transform:translateY(-4px) scale(1.35);text-shadow:0 0 16px rgba(95,245,238,.9)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){.ar-target.on,.ar-target.on .c,.ar-target.on::after,.ar-target.on .ar-tag,.pull-target .ring,.pull-target .chev{animation:none}.ar-target.on .ar-tag{opacity:1}}
+
+/* 수거 완료: 기록 카드는 숨기고, 문구는 인식 틀 바로 아래 가운데 */
+.page-dive .dive-records{display:none}
+.page-dive.is-done .dive-guide{bottom:auto;top:calc(67% + 34px)}
+.page-dive.is-done .dive-guide small{display:none}
+/* COLLECTED 카운팅 순간을 또렷하게 */
+.ar-right p.ar-count b{transform-origin:left 80%}
+.ar-right p:first-child span{transition:color .3s}
+.ar-right p.ar-count.counting span{color:var(--ar)}
+.ar-right p.ar-count.counting b{text-shadow:0 0 22px rgba(95,245,238,.85),0 0 4px rgba(95,245,238,.9)}
+
+/* 완료 문구는 표시하지 않는다 */
+.page-dive.is-done .dive-guide{display:none}
+/* 잠수 화면: 밝은 불빛 위에서도 손 포인터 조준점이 또렷하게 */
+body.dark-ui .hand-cursor{border-width:2px;box-shadow:0 0 0 1px rgba(0,0,0,.45),inset 0 0 0 1px rgba(0,0,0,.35)}
+body.dark-ui .cursor-core{inset:21px;box-shadow:0 0 0 2px rgba(0,0,0,.55)}
+.ar-tag-body b em{display:inline-block}
+
+/* ---- 06 그물: 실제 그물 가닥이 AR 홀로그램으로 드러나고, 떼지 않고 위치만 표시 ---- */
+.scene-net .dive-bg{filter:none}
+.scene-net .dive-find,.scene-net .dive-zone{display:none}
+.net-holo-wrap{position:absolute;left:-2%;top:-2%;width:104%;height:104%;pointer-events:none;opacity:0;filter:drop-shadow(0 0 5px rgba(95,245,238,.75));clip-path:inset(0 0 100% 0)}
+.net-holo{position:absolute;inset:0;background:var(--ar);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.net-found .net-holo-wrap{animation:net-reveal 1.6s cubic-bezier(.3,.6,.2,1) forwards,net-breathe 2.4s 1.8s ease-in-out infinite}
+@keyframes net-reveal{0%{opacity:1;clip-path:inset(0 0 100% 0)}12%{opacity:.3}20%{opacity:1}100%{opacity:1;clip-path:inset(0 0 0 0)}}
+@keyframes net-breathe{0%,100%{opacity:1}50%{opacity:.55}}
+.scene-net.phase-done .net-holo-wrap{animation:none;opacity:.4;clip-path:inset(0);transition:opacity .6s}
+.net-scan{position:absolute;left:33%;width:58%;top:16%;height:2px;background:var(--ar);box-shadow:0 0 18px 4px rgba(95,245,238,.55);opacity:0;pointer-events:none}
+.net-found .net-scan{animation:net-scan 1.6s cubic-bezier(.3,.6,.2,1) forwards}
+@keyframes net-scan{0%{top:16%;opacity:0}8%{opacity:1}92%{opacity:1}100%{top:100%;opacity:0}}
+.net-anchor{left:50%;top:28%;width:0;height:0}
+.net-anchor::before,.net-anchor::after{display:none}
+.net-anchor .ar-tag{left:18px;top:0}
+.ar-icon svg path{stroke-linecap:round}
+/* MARK 핀: 그물 위에 떠 있는 위치 표시 — 머무르면 핀이 아래에서 위로 차오른다 */
+.net-pin{position:absolute;left:54%;top:53%;width:76px;height:100px;margin:0;padding:0;border:0;background:none;color:#fff;font:inherit;cursor:pointer;pointer-events:auto;opacity:0;visibility:hidden;transform:translate(-50%,-100%)}
+.net-pin svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.net-pin svg path{fill:rgba(0,0,0,.28);stroke:#fff;stroke-width:1.6;stroke-linejoin:round}
+.net-pin .pin-fill{position:absolute;inset:0;background:linear-gradient(to top,rgba(255,255,255,.36) var(--dwell,0%),transparent 0);-webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 76 100'><path d='M38 97C38 97 5 60 5 36A33 33 0 1 1 71 36C71 60 38 97 38 97Z'/></svg>") center/100% 100% no-repeat;mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 76 100'><path d='M38 97C38 97 5 60 5 36A33 33 0 1 1 71 36C71 60 38 97 38 97Z'/></svg>") center/100% 100% no-repeat}
+.net-pin b{position:absolute;left:0;right:0;top:29px;text-align:center;font-size:13px;font-weight:700;letter-spacing:.08em}
+.net-pin:hover svg path,.net-pin.gaze svg path{stroke-width:2.6}
+.scene-net.phase-keep .net-pin{visibility:visible;animation:pin-in .6s 1.5s cubic-bezier(.2,.9,.2,1.2) forwards}
+@keyframes pin-in{from{opacity:0;transform:translate(-50%,calc(-100% - 24px))}to{opacity:1;transform:translate(-50%,-100%)}}
+.scene-net.phase-done .net-pin{visibility:visible;opacity:1;pointer-events:none;animation:pin-drop .5s cubic-bezier(.3,1.6,.5,1) forwards}
+.scene-net.phase-done .net-pin .pin-fill{background:rgba(255,255,255,.36)}
+@keyframes pin-drop{0%{transform:translate(-50%,calc(-100% - 14px))}100%{transform:translate(-50%,-100%)}}
+.net-coord{position:absolute;left:calc(54% + 52px);top:calc(53% - 96px);margin:0;font-size:14px;line-height:1.5;color:var(--ar);text-shadow:0 0 12px rgba(0,0,0,.85);opacity:0;pointer-events:none}
+.scene-net.phase-done .net-coord{animation:holo-tag .8s .35s both}
+.page-dive.is-pulling .net-pin{visibility:hidden}
+.ar-right p.ar-count span{min-width:112px}
+.net-anchor .ar-icon svg{width:20px;height:20px}
+
+/* ---- 06 시야 변화: 시야가 흐려지고 버디가 멀어짐 → 엄지 신호 → 함께 상승 ---- */
+.scene-visibility .dive-bg{filter:blur(calc(var(--murk) * 10px)) brightness(calc(1 - var(--murk) * .25 + var(--rise,0) * .45)) saturate(calc(1 - var(--murk) * .5));transform:scale(1.12) translateY(calc(var(--rise,0) * 7%));transform-origin:70% 50%}
+.scene-visibility .dive-haze{background:radial-gradient(120% 90% at 50% 45%,rgba(120,150,145,.35),rgba(70,95,95,.85));opacity:calc(var(--murk) * .95)}
+.scene-visibility .dive-haze::after{content:"";position:absolute;inset:0;background:radial-gradient(80% 60% at 50% -10%,rgba(235,250,255,.9),transparent 70%);opacity:calc(var(--rise,0) * .9)}
+.scene-visibility .dive-dark{opacity:.25}
+.scene-visibility .dive-vis,.scene-visibility .dive-up{display:none}
+.vis-alert{position:absolute;left:50%;top:236px;display:flex;align-items:baseline;gap:14px;transform:translateX(-50%);color:#fff;text-shadow:0 0 14px rgba(0,0,0,.85);pointer-events:none;animation:holo-tag .8s .2s both}
+.vis-alert span{font-size:16px;font-weight:500;letter-spacing:.04em}
+.vis-alert b{font-size:58px;font-weight:200;line-height:.9;color:var(--ar);font-variant-numeric:tabular-nums}
+.vis-alert em{font-style:normal;font-size:16px;color:var(--ar)}
+.scene-visibility.phase-done .vis-alert{opacity:0;transition:opacity .6s}
+.ar-buddy.warn em i{animation:buddy-blink .8s steps(1,end) infinite}
+.ar-buddy.warn em b{color:var(--ar)}
+@keyframes buddy-blink{50%{opacity:.15}}
+/* UP 신호: START 손바닥과 같은 방식, 엄지 아이콘 */
+.vis-thumb{width:112px;height:157px}
+.vis-thumb .palm-fill{-webkit-mask-image:url(assets/dive/thumb.svg);mask-image:url(assets/dive/thumb.svg)}
+.dive-guide .vis-thumb b{left:14%;right:36%;top:70%}
+.is-signal .dive-guide{bottom:236px}
+.is-signal .vis-thumb{display:grid;animation:start-in .5s .6s ease-out forwards}
+.is-ready .vis-thumb{display:none}
+
+/* ---- 06 확인·선별: 왼쪽 기록 목록에서 고르고, 오른쪽 돌에 새긴다 (03과 같은 구도) ---- */
+.page-review .lp-cairn-caption{display:none}
+.page-review .lp-canvas{opacity:1}
+.rv-list{width:min(620px,33vw);margin-top:4vh}
+.rv-head{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 14px;font-size:14px;color:var(--ink-3)}
+.rv-head b{font-size:20px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.rv-rows{border-top:1px solid var(--hair)}
+.rv-row{position:relative;display:grid;grid-template-columns:40px 46px 56px 1fr;align-items:center;width:100%;margin:0;padding:12px 0;border:0;border-bottom:1px solid var(--hair);background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer;
+  opacity:0;transform:translateY(10px);animation:rv-in .6s calc(.25s + var(--i) * .08s) cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes rv-in{to{opacity:1;transform:none}}
+.rv-check{position:relative;width:22px;height:22px;border:1.5px solid var(--ink-3);border-radius:50%;transition:background .25s,border-color .25s}
+.rv-check::after{content:"";position:absolute;left:6px;top:3px;width:6px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) scale(0);transition:transform .25s cubic-bezier(.2,.9,.2,1.4)}
+.rv-row.on .rv-check{background:var(--ink);border-color:var(--ink)}
+.rv-row.on .rv-check::after{transform:rotate(45deg) scale(1)}
+.rv-kind{font-size:14px;color:var(--ink-3)}
+.rv-body b{display:block;font-size:21px;font-weight:600;letter-spacing:-.01em;color:var(--ink-2);transition:color .25s}
+.rv-body small{display:block;margin-top:4px;font-size:14px;color:var(--ink-3)}
+.rv-row.on .rv-body b{color:var(--ink)}
+.rv-row .dwell{position:absolute;left:0;bottom:-1px;height:2px;width:var(--dwell,0%);background:var(--ink)}
+.rv-row:hover .rv-check,.rv-row.gaze .rv-check{border-color:var(--ink)}
+.page-review.is-full .rv-row:not(.on){opacity:.4}
+.rv-next{position:relative;left:auto;top:auto;width:100%;margin-top:24px}
+.rv-next.ready{opacity:1;transform:none;pointer-events:auto}
+.rv-stone-hint{font-size:17px}
+.page-review.today-loaded .rv-stone-hint{opacity:1}
+.rv-toast{position:absolute;z-index:8;left:50%;bottom:64px;margin:0;padding:12px 22px;border-radius:999px;background:var(--ink);color:#fff;font-size:15px;transform:translateX(-50%);opacity:0;pointer-events:none}
+.rv-toast.show{animation:rv-toast 1.8s ease forwards}
+@keyframes rv-toast{0%{opacity:0;transform:translate(-50%,8px)}12%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+
+/* ---- 07 전달: 내 돌을 잡아 돌탑 꼭대기에 올린다 ---- */
+.page-relay .lp-cairn-caption{display:none}
+.page-relay .lp-canvas{opacity:1}
+.rl-list{width:min(560px,31vw);margin-top:7vh}
+.page-relay .rec-from{opacity:1}
+.page-relay .trace-row{opacity:1;transform:none}
+.rl-note{margin:22px 0 0;font-size:15px;line-height:1.6;color:var(--ink-2);word-break:keep-all}
+.rl-note b{font-weight:600;color:var(--ink)}
+.relay-core{position:absolute;z-index:6;padding:0;border:0;background:none;cursor:grab;border-radius:30%}
+.relay-grab .relay-core,.is-placed .relay-core{pointer-events:none}
+.relay-hint{opacity:1}
+.is-placed .relay-hint{opacity:0;transition-delay:0s}
+/* 올릴 자리: 돌탑 꼭대기에 점선 원 — 돌을 잡으면 나타나고, 가까이 가면 채워진다 */
+.relay-target{position:absolute;z-index:5;left:0;top:0;width:0;height:0;pointer-events:none;opacity:0;transition:opacity .4s}
+.relay-target i{position:absolute;left:-70px;top:-70px;width:140px;height:140px;border:1.5px dashed var(--ink);border-radius:50%;animation:rl-spin 12s linear infinite}
+.relay-target span{position:absolute;left:0;top:-104px;transform:translateX(-50%);white-space:nowrap;font-size:16px;font-weight:600}
+.relay-grab .relay-target{opacity:1}
+.relay-near .relay-target i{border-style:solid;background:rgba(20,20,20,.08);animation:none;transform:scale(1.08);transition:transform .3s}
+.is-placed .relay-target{opacity:0}
+@keyframes rl-spin{to{transform:rotate(360deg)}}
+.rl-done{display:flex;align-items:center;gap:14px;margin:44px 0 0;font-size:28px;font-weight:700;letter-spacing:-.02em;opacity:0;transform:translateY(10px);transition:opacity .6s .9s,transform .6s .9s}
+.is-placed .rl-done{opacity:1;transform:none}
+.page-relay .lp-meta b{display:inline-block;transform-origin:center 80%}
+.rl-done i{width:12px;height:12px;border-radius:50%;background:var(--ink)}
+
+/* ---- 완료: 왼쪽에 정리, 오른쪽 돌탑 꼭대기에 방금 올린 돌 ---- */
+.page-end .lp-cairn-caption{display:none}
+.page-end .lp-canvas{opacity:1}
+.page-end .relay-core,.page-end .relay-target{display:none}
+.end-copy{top:15vh;width:min(820px,44vw)}
+.end-kicker{margin:0 0 22px;font-size:14px;font-weight:600;letter-spacing:.08em;color:var(--ink-3)}
+.end-copy .lp-title b{font-variant-numeric:tabular-nums}
+.end-lead{margin:30px 0 0;white-space:nowrap;font-size:18px;line-height:1.65;color:var(--ink-2);word-break:keep-all}
+/* 체험 경로: 가는 선 위의 점 8개 — 마지막은 다음 참가자 */
+.end-path{position:relative;display:grid;grid-template-columns:repeat(8,1fr);width:min(760px,40vw);margin:7vh 0 0;padding:0;list-style:none}
+.end-path::before{content:"";position:absolute;left:5px;right:calc(12.5% - 5px);top:5px;height:1px;background:var(--ink-3)}
+.end-path li{position:relative;display:flex;flex-direction:column;gap:3px;padding-top:24px;font-size:14px;font-weight:600;white-space:nowrap;opacity:0;animation:rv-in .5s calc(.4s + var(--i) * .12s) cubic-bezier(.2,.8,.2,1) forwards}
+.end-path li i{position:absolute;left:0;top:0;width:11px;height:11px;border-radius:50%;background:var(--ink)}
+.end-path li span{font-size:12px;font-weight:400;color:var(--ink-3)}
+.end-path li.next i{background:var(--bg,#ecebe6);border:1.5px solid var(--ink)}
+.end-path li.next i::after{content:"";position:absolute;inset:-6px;border:1px solid var(--ink);border-radius:50%;animation:hint-ring 2.4s cubic-bezier(.2,.7,.2,1) infinite}
+.end-next{position:relative;left:auto;top:auto;width:min(560px,31vw);margin-top:7vh;opacity:1;transform:none;pointer-events:auto}
+
+/* 05 페트병 인식: 안내문은 인식 틀 위(나침반 아래), START 손바닥은 인식 틀 아래 — 셋 다 화면 가운데 */
+.page-dive.is-ready .dive-guide{bottom:auto;top:214px}
+.dive-start-pull{position:absolute;z-index:5;left:50%;top:calc(67% + 40px)}
+/* UP 글자는 주먹 한가운데 */
+.dive-guide .vis-thumb b{left:26%;right:33%;top:61%}
+/* 06 선별: 하단 여백 확보 */
+.page-review .rv-copy{top:14vh}
+.page-review .rv-list{margin-top:3.5vh}
+.page-review .rv-row{padding:10px 0}
+.page-review .rv-next{margin-top:20px}
+.dive-start-pull b{position:absolute;left:61.3%;right:auto;top:69.6%;margin:0;transform:translateX(-50%);text-align:center;font-size:15px;font-weight:700;line-height:1;letter-spacing:.08em;white-space:nowrap}
+
+/* 기록마다 돌에 새겨질 문양 — 줄 옆에 작게, 고르면 진해진다 */
+.rv-motif{width:30px;height:26px;background:var(--ink-3);-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat;transition:background .25s,transform .35s cubic-bezier(.2,.9,.2,1.4)}
+.rv-row.on .rv-motif{background:var(--ink);transform:scale(1.12)}
+.rl-row dt{display:flex;align-items:center;gap:12px}
+.rl-row .rv-motif{background:var(--ink)}
+
+/* 손 커서: 대상 위에선 링이 꽉 차 '준비', 주먹을 쥐는 순간 꾹 눌린다 */
+.hand-cursor{transition:opacity .2s,width .2s,height .2s}
+.hand-cursor.aim{box-shadow:0 0 0 3px rgba(255,255,255,.35)}
+body.light-ui .hand-cursor.aim{box-shadow:0 0 0 3px rgba(20,20,20,.12)}
+.hand-cursor.grip .cursor-core{animation:cursor-grip .35s ease}
+.hand-cursor.grip{animation:cursor-grip-ring .35s ease}
+@keyframes cursor-grip{40%{transform:scale(1.8)}}
+@keyframes cursor-grip-ring{40%{scale:.78}}
+
+/* 상단 손 상태 아이콘 — 손바닥/주먹 면 아이콘, 색은 상태 글자와 같다 */
+.hand-ico{display:inline-block;width:1.15em;height:1.15em;margin-right:.4em;vertical-align:-.2em;background:currentColor;-webkit-mask:var(--ico) center/contain no-repeat;mask:var(--ico) center/contain no-repeat}
+.hand-ico.palm{--ico:url(assets/dive/palm.svg)}
+.hand-ico.fist{--ico:url(assets/ui/fist.svg)}
+
+/* ---- TV 송출 보정: 화면 가장자리가 잘려 보이지 않게 상단 여백을 넉넉히 ---- */
+.cover-top,.lp-top{padding:60px calc(var(--gutter) + 28px)}
+/* 뒤로가기 화살표를 순서 줄과 같은 높이에 */
+.lp-top{align-items:center}
+.lp-top .lp-route li{padding-top:10px}
+.lp-back{margin:0 0 0 -14px}
+.lp-cairn-caption{font-size:16px}
+
+/* ---- 처음 온 사람에게 '여기를 누르세요'를 알려 주는 반짝임 ---- */
+@keyframes beckon-ring{0%{box-shadow:0 0 0 0 rgba(20,20,20,.35)}70%,100%{box-shadow:0 0 0 18px rgba(20,20,20,0)}}
+@keyframes beckon-glow{0%,100%{background:rgba(20,20,20,0)}50%{background:rgba(20,20,20,.07)}}
+@keyframes beckon-arrow{0%,100%{transform:translateX(0)}50%{transform:translateX(10px)}}
+@keyframes beckon-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.cal-day.live:not(.gaze){animation:beckon-ring 1.8s ease-out infinite,beckon-breathe 1.8s ease-in-out infinite}
+.cover-option.primary:not(.gaze),.apply-pick:not(.gaze),.lp-next:not(.gaze),.rv-next.ready:not(.gaze){animation:beckon-glow 1.8s ease-in-out infinite}
+.cover-option.primary .opt-arrow,.apply-pick .lp-next-arrow,.lp-next .lp-next-arrow{display:inline-block;animation:beckon-arrow 1.2s ease-in-out infinite}
+.dive-start:not(.gaze) .palm-line,.vis-thumb:not(.gaze) .palm-line,.net-pin:not(.gaze) svg{animation:beckon-breathe 1.6s ease-in-out infinite;transform-origin:50% 60%}
+.page-route .lp-next:not(.gaze),.page-dive .lp-next:not(.gaze){animation-name:none}
+
+/* 뒤로가기 옆 '처음으로' */
+.lp-nav{display:flex;align-items:center;gap:6px}
+.lp-home svg{width:24px;height:24px}
