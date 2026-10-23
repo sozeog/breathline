@@ -1,5 +1,5 @@
 import { FilesetResolver, GestureRecognizer } from './vendor/mediapipe/vision_bundle.mjs';
-import { coverView, mountStage, unmountStage, setCoverHand, setCoverPointer, tapCairn, preloadKit, setKitOpen, setTodayReceived, setBuddyCheck, resetBuddy, setBalanceReady, onBalanceCommit, resetBalance, commitBalance, bumpToday, relayGrab, onRelayPlaced, resetRelay, setMineRecords, setFistMode, balanceFist, relayRelease } from './cover.js?v=20261022-ar3';
+import { coverView, mountStage, unmountStage, setCoverHand, setCoverPointer, tapCairn, preloadKit, setKitOpen, setTodayReceived, setBuddyCheck, resetBuddy, setBalanceReady, onBalanceCommit, resetBalance, commitBalance, bumpToday, relayGrab, onRelayPlaced, resetRelay, setMineRecords, setFistMode, balanceFist, relayRelease } from './cover.js?v=20261023-hs1';
 
 const app = document.querySelector('#app');
 const camera = document.querySelector('#camera');
@@ -936,7 +936,7 @@ function isFist(result,i){
 // 손바닥 중심(손목·검지·중지·새끼 뿌리 평균) — 주먹을 쥐어도 위치가 거의 변하지 않는다
 // 감도: 카메라 화면 전체가 아니라 가운데 영역(가로 22~78%, 세로 15~70%)만 화면 전체로 넓혀 쓴다
 // → 부스 끝까지 가지 않아도, 작은 손 움직임으로 화면 끝까지 닿는다
-const HAND_BOX={x0:.22,x1:.78,y0:.15,y1:.70};
+const HAND_BOX={x0:.33,x1:.67,y0:.15,y1:.70};
 const clamp01=v=>Math.max(0,Math.min(1,v));
 function palmPoint(l){const k=[0,5,9,17];let x=0,y=0;k.forEach(i=>{x+=l[i].x;y+=l[i].y;});x/=4;y/=4;
   const u=clamp01(((1-x)-HAND_BOX.x0)/(HAND_BOX.x1-HAND_BOX.x0)), v=clamp01((y-HAND_BOX.y0)/(HAND_BOX.y1-HAND_BOX.y0));
